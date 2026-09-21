@@ -1,20 +1,20 @@
 import asyncio
-from broker.protocol import encode_message, read_length, read_message
-import time
+from producer import Producer
+from consumer import Consumer
 
-async def test_function():
-    reader, writer = await asyncio.open_connection('127.0.0.1', 8888)
-    print("Connected")
-    topic = "test-topic"
-    timestamp = time.time()
-    payload = input("Type your message: ")
-    message = {"topic":topic, "timestamp":timestamp, "payload":payload}
-    encoded_message = encode_message(message)
-    writer.write(encoded_message)
-    print("Sent")
-    await writer.drain()
-    length = await read_length(reader)
-    data = await read_message(reader,length)
-    print(data)
+async def consumer_test():
+    consumer = Consumer()
+    await consumer.connect()
+    await consumer.subscribe("test-topic")
+    message = await consumer.recieve()
+    print(message)
 
-asyncio.run(test_function())
+async def producer_test():
+    producer = Producer()
+    await producer.connect()
+    await producer.publish("test-topic","test")
+
+async def main():
+    await asyncio.gather(consumer_test(),producer_test())
+
+asyncio.run(main())
