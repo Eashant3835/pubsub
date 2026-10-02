@@ -24,7 +24,7 @@ Requires Python (developed on Python 3.14). No dependencies to install.
 From the repo level folder (the one containing broker/ and client/) run 
 
 ```
-python -m broker.server
+python3 -m broker.server
 ```
 The terminal will appear to hang. That's expected, since the broker is waiting for connections. Press Ctrl+C to stop it when you're done.
 
@@ -32,7 +32,7 @@ The terminal will appear to hang. That's expected, since the broker is waiting f
 In a second terminal, from the same folder run
 
 ```
-python -m client.connection
+python3 -m client.connection
 ```
 
 ### Step 5
