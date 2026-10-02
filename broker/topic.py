@@ -1,4 +1,4 @@
-from protocol import encode_message
+from broker.protocol import encode_message
 
 class TopicManager:
     def __init__(self):

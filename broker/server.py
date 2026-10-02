@@ -1,6 +1,6 @@
 import asyncio
-from protocol import encode_message, read_length, read_message
-from topic import TopicManager
+from broker.protocol import encode_message, read_length, read_message
+from broker.topic import TopicManager
 class Broker:
     def __init__(self, manager):
         self.manager = manager
