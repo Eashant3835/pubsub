@@ -10,6 +10,8 @@ class TopicManager:
             self.topics[topic] = []
         if writer not in self.writers:
             self.writers[writer] = []
+        if writer in self.topics[topic]:
+            return None
         self.topics[topic].append(writer)
         self.writers[writer].append(topic)
 
