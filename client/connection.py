@@ -19,7 +19,7 @@ async def consumer_test2():
 async def consumer_test3():
     consumer3 = Consumer()
     await consumer3.connect()
-    await consumer3.subscribe("test-topic3")
+    await consumer3.subscribe("test-topic")
     message = await consumer3.recieve()
     print(message)
 
@@ -28,7 +28,6 @@ async def producer_test():
     await producer.connect()
     await producer.publish("test-topic","test1")
     await producer.publish("test-topic2","test2")
-    await producer.publish("test-topic3","test3")
     
 
 async def main():
