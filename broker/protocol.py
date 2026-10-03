@@ -9,10 +9,10 @@ def encode_message(data_dict):
     return length_prefix + encoded
 
 async def read_length(reader):
-    length_bytes = await reader.read(4)
+    length_bytes = await reader.readexactly(4)
     return int.from_bytes(length_bytes, 'big')
 
 async def read_message(reader,length):
-    data = await reader.read(length)
+    data = await reader.readexactly(length)
     data_string = data.decode()
     return json.loads(data_string)
