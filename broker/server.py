@@ -1,6 +1,8 @@
 import asyncio
 from broker.protocol import encode_message, read_length, read_message
 from broker.topic import TopicManager
+import re
+
 class Broker:
     def __init__(self, manager):
         self.manager = manager
@@ -15,7 +17,16 @@ class Broker:
                 except asyncio.IncompleteReadError:
                     print("Disconnected")
                     break
+
                 topic = data["topic"]
+                try:
+                    pattern = r"[a-zA-Z0-9_-]+"
+                    if not re.fullmatch(pattern, topic):
+                        raise ValueError()
+                except ValueError:
+                    print("Please only use number, letters or '-' and '_' for topic names.")
+                    break
+                
                 print(f"Recieved: {data}")
 
                 if data["type"] == "publish":

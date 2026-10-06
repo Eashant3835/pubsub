@@ -1,4 +1,5 @@
 from broker.protocol import encode_message
+from broker.log import store_message
 
 class TopicManager:
     def __init__(self):
@@ -16,9 +17,10 @@ class TopicManager:
         self.writers[writer].append(topic)
 
     async def publish(self, topic, message):
+        encoded_message = encode_message(message)
+        store_message(topic,encoded_message)
         if topic not in self.topics or not self.topics[topic]:
             return None
-        encoded_message = encode_message(message)
         for writer in self.topics[topic]:
             writer.write(encoded_message)
             await writer.drain()

@@ -1,6 +1,7 @@
 import asyncio
 import time
 from broker.protocol import encode_message
+import os
 
 class Producer:
     async def connect(self):

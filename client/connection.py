@@ -28,7 +28,7 @@ async def producer_test():
     await producer.connect()
     await producer.publish("test-topic","test1")
     await producer.publish("test-topic2","test2")
-    
+
 
 async def main():
     await asyncio.gather(consumer_test(),consumer_test2(),consumer_test3(),producer_test())
