@@ -49,3 +49,33 @@ test1
 test2
 ```
 Three consumers connect, two subscribe to the same topic and one to a different topic, the producer publishes once to each topic, and the shared topic's message shows up twice (once per consumer).
+
+## Limitations:
+
+Nothing is acknowledged.
+
+A malformed message crashes that client’s handler.
+
+A subscriber dying mid-publish can break the publisher.
+
+Empty topics are never pruned.
+
+A consumer gets an unhandled exception if the broker closes its connection.
+
+Consumers only receive the payload with no topic.
+
+os.fsync is a blocking call so it while its fsyncing it cant do anything else.
+
+A rejected client gets no explanation, because there's no reply channel until acks exist.
+
+Topics are validated on the broker but not the client.
+
+Length 0 is invalid but not enforced yet.
+
+The log only keeps the payload.
+
+A crash mid append can leave a partial entry.
+
+Logs grow without limit.
+
+The log directory is relative to where the broker is launched. Starting it from a different folder creates a second logs/.
