@@ -1,15 +1,17 @@
 import asyncio
 import json
- 
+
+PREFIX_SIZE = 4
+
 def encode_message(data_dict):
     data = json.dumps(data_dict)
     encoded = data.encode()
     length_data = len(encoded)
-    length_prefix = length_data.to_bytes(4, 'big')
+    length_prefix = length_data.to_bytes(PREFIX_SIZE, 'big')
     return length_prefix + encoded
 
 async def read_length(reader):
-    length_bytes = await reader.readexactly(4)
+    length_bytes = await reader.readexactly(PREFIX_SIZE)
     return int.from_bytes(length_bytes, 'big')
 
 async def read_message(reader,length):
