@@ -16,8 +16,8 @@ class TopicManager:
         self.topics[topic].append(writer)
         self.writers[writer].append(topic)
 
-    async def publish(self, topic, message):
-        encoded_message = encode_message(message)
+    async def publish(self, topic, payload):
+        encoded_message = encode_message(payload)
         store_message(topic,encoded_message)
         if topic not in self.topics or not self.topics[topic]:
             return None

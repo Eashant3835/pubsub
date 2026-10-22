@@ -31,7 +31,7 @@ def check(data):
     else:
         return("False")
 
-with open(path, "rb") as f:
+with open(path, "wb") as f:
     data = f.read()
     print(check(data))
     damaged = bytearray(data)

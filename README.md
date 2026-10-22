@@ -79,3 +79,7 @@ A crash mid append can leave a partial entry.
 Logs grow without limit.
 
 The log directory is relative to where the broker is launched. Starting it from a different folder creates a second logs/.
+
+There’s no maximum length. A very long valid topic becomes a filename, and the operating system rejects names past its limit (usually 255 bytes). That raises an error inside store_message and closes that client’s connection.
+
+The log filename is case-sensitive only on some filesystems. On Linux, ABC.log and abc.log are different files, as the spec says. On macOS and Windows they usually collide, so two “different” topics would share a log.
