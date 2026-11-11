@@ -1,6 +1,7 @@
 import asyncio
 from broker.protocol import encode_message, read_length, read_message
 from broker.topic import TopicManager
+from broker.log import load_indexes, indexes
 import re
 
 class Broker:

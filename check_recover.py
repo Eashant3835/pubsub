@@ -27,7 +27,7 @@ def helper(label, data):
         f.write(data)
     before = open(damaged_path, "rb").read()
     try:
-        result = recover(damaged_path)
+        result, starts = recover(damaged_path)
     except LogCorruptionError as e:
         print(f"{label}, raised: {e}")
     else:
