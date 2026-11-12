@@ -36,3 +36,6 @@ try_it("no body", original[:47])
 try_it("flipped mid stream byte", damaged)
 try_it("flipped last entry byte", damaged2)
 print(scan(fake_path))
+
+os.remove(damaged_path)
+os.remove(path)
