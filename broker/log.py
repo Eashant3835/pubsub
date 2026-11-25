@@ -1,6 +1,7 @@
 import os
 from broker.protocol import encode_message
 import zlib
+import json
 
 CHECKSUM_SIZE = 4
 LENGTH_SIZE = 4
@@ -9,23 +10,36 @@ TORN_TAIL = "torn tail"
 CORRUPTION = "corruption"
 
 indexes = {}
+POSITIONS_PATH = "logs/broker.positions"
 
 class LogCorruptionError(Exception):
     """Raised when a log has corrupted data."""
     pass
 
-
-def store_message(topic, encoded_message):
-    path = os.path.join("logs", topic + ".log")
-    os.makedirs("logs", exist_ok=True)
+def store_position(consumer_id, topic, offset):
+    message = {"consumer_id": consumer_id, "topic": topic, "offset": offset}
+    os.makedirs(os.path.dirname(POSITIONS_PATH), exist_ok=True)
+    append_entry(POSITIONS_PATH, encode_message(message))
+        
+def append_entry(path, encoded_message):
     checksum = zlib.crc32(encoded_message)
     crc_prefix = checksum.to_bytes(CHECKSUM_SIZE, 'big')
     crc_message = crc_prefix + encoded_message
     start = os.path.getsize(path) if os.path.exists(path) else 0
     with open(path, "ab") as f:
-        f.write(crc_message)
-        f.flush()
+        try:
+            f.write(crc_message)
+            f.flush()
+        except OSError:
+            os.truncate(path, start)
+            raise
         os.fsync(f.fileno())
+    return start
+
+def store_message(topic, encoded_message):
+    path = os.path.join("logs", topic + ".log")
+    os.makedirs("logs", exist_ok=True)
+    start = append_entry(path , encoded_message)
     indexes.setdefault(topic, []).append(start)
     return (len(indexes[topic]) - 1)
 
@@ -93,6 +107,15 @@ def load_indexes(logs_dir):
         path = os.path.join(logs_dir,filename) 
         position,starts = recover(path)
         indexes[topic] = starts
+
+def load_positions(path):
+    position,starts = recover(path)
+    table = {}
+    for i in range(len(starts)):
+        encoded_record = read_entry(path, starts, i)
+        record = json.loads(encoded_record)
+        table[(record["consumer_id"], record["topic"])] = record["offset"]
+    return table
 
 def read_entry(path, starts, offset):
     if offset < 0:

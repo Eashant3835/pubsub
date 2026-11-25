@@ -19,4 +19,13 @@ class Consumer:
         data = await read_message(self.reader,length)
         return(data)
     
-   
+    async def fetch(self, topic, consumer_id):
+        message = {"type": "fetch", "topic": topic, "consumer_id": consumer_id}
+        self.writer.write(encode_message(message))
+        await self.writer.drain()
+        return await self.recieve()
+
+    async def commit(self, topic, consumer_id, offset):
+        message = {"type": "commit", "topic": topic, "consumer_id": consumer_id, "offset": offset}
+        self.writer.write(encode_message(message))
+        await self.writer.drain()
